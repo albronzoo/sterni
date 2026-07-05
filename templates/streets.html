@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Umfrage</title>
+    <link rel="mask-icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    <link rel="apple-touch-startup-image" href="{{ url_for('static', filename='favicon.ico') }}">
+    <style>
+        body {
+            background: #f089ca;
+            background-image: url('static/bilder/leipzig.png');
+            font-family: "Comic Sans", "Comic Sans MS", "Chalkboard", "ChalkboardSE-Regular", sans-serif;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            background-size: 24vw 18vh;
+            text-align: center;
+            background-position: top 5% left 5%;
+            background-position: bottom 5% left 5%;
+            touch-action: none;
+        }
+
+        html{
+            touch-action: none;
+        }
+
+        body2 {
+            background: #f089ca;
+            background-image: url('static/bilder/leipzig.png');
+            font-family: "Comic Sans", "Comic Sans MS", "Chalkboard", "ChalkboardSE-Regular", sans-serif;
+            background-repeat: repeat;
+            background-attachment: fixed;
+            background-size: 10% 10%;
+            text-align: center;
+            background-position: bottom;
+        }
+
+        h1 {
+            font-size: 5vh;
+            font-weight: bold;
+            color: #ffbb10;
+            text-shadow: 3px 3px #000000;
+
+        }
+
+
+        h2 {
+            font-size: 3vh;
+            color: rgb(0, 0, 0);
+            line-height: 1.1;
+        }
+        
+        h3 {
+            font-size: 1.5vh;
+            color: rgb(0, 0, 0);
+        }
+
+        .box {
+            background: white;
+            border: 5px dashed hotpink;
+            padding: 7.5%;
+            margin: auto;
+            width: 60vw;
+            height: 40vh;
+            box-shadow: 10px 10px 0px black;
+        }
+
+        input {
+            height: 10%;
+            width: 70%;
+            font-family: inherit;
+            font-size: 2vh;
+            border: 2px solid #f089ca;
+            padding: 2%;
+        }
+
+        button {
+            background: lime;
+            border: 3px solid black;
+            padding: 2vh 10vw;
+            font-size: 2vh;
+            font-family: inherit;
+            cursor: pointer;
+            margin-top: 2vh;
+        }
+
+        button:hover {
+            background: yellow;
+        }
+
+        #thanks {
+            display: none;
+            margin-top: 20px;
+            font-size: 25px;
+            color: purple;
+        }
+
+        marquee {
+            color: red;
+            font-size: 2vh;
+        }
+
+        .street-search {
+            position: relative;
+        }
+        #suggestions {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            width: 100%;
+            margin: 0;
+            padding: 0;
+            list-style: none;
+            background: white;
+            border: 1px solid #ccc;
+            border-top: none;
+            max-height: 250px;
+            overflow-y: auto;
+            z-index: 1000;
+            display: none; /* hidden initially */
+            border: 2px solid #f089ca;
+            font-size: 2vh;
+        }
+
+        #suggestions li {
+            padding: 10px;
+            cursor: pointer;
+            color: black;
+            font-size: 2vh;
+        }
+
+        #suggestions li:hover {
+            background: #f0f0f0;
+        }
+    </style>
+</head>
+
+
+<body>
+
+<marquee>
+    🚨 EXTREM WICHTIGE UMFRAGE 🚨 (oder so) 🚨
+</marquee>
+
+<h1>
+    World's Kürzest Studierendenbefragung™
+</h1>
+
+<div class="box">
+
+    <h2>
+        Du studierst in Leipzig!? In welcher Straße wohnst du?
+    </h2>
+
+    <h3>
+        Keine Erklärungen. Keine Likert-Skala. Nur Straße.
+    </h3>
+
+
+    <div class="street-search">
+        <input id="street" type="text" placeholder="(: Wähle deine Straße :)">
+        <ul id="suggestions"></ul>
+    </div>
+
+    <br>
+
+
+    <button id="button" onclick="vote()">
+        ABSCHICKN 
+    </button>
+
+
+    <div id="thanks">
+        🎉 Thanks for participating!<br>
+        Your street has been officially streeted.
+    </div>
+
+</div>
+
+
+<script>
+// To-Do: Die Straßenliste aus der Bewertung reinladen, Texte verschönern, Memes als Belohnung -> Maybe Device-Id oder so mit speichern? Oder drauf schaisen und Hausnummer mit abfragen?
+// Wichtige Pepe-Maymays
+// Bist du wirklich sicher, dass du in der 'Straßennamen Einfügen'-Straße wohnst?
+// Als danke ein Maymay und maybe die Erläuterung aus der XML?
+// Vote + Gehashte IP + Timestamp
+
+// Bonusumfrage? Rundenbasiertes 1 gg 1 der Features -> Später ranken
+// ELO-System aus randomized Rankings 
+async function vote() {
+    let street = document.getElementById("street").value;
+    if (street === "") {
+        alert("Du hast vergessen die Straße! 😡");
+        return;
+    }
+    if (!streets.includes(street)) {
+        alert("Bitte wähle eine Straße aus der Liste aus! 😡");
+        return;
+    }
+    console.log("Vote:", street);
+    await abschicken(street)
+    document.getElementById("button").textContent = "ABGESCHICKT! 🎉"
+    suggestionBox.style.display = "none";
+    window.location.href = "/ranking";
+    
+}
+
+
+// Straßennamen laden
+let streets = [];
+
+fetch("/static/straßen.json")
+    .then(response => response.json())
+    .then(data => {
+        streets = data;
+        console.log("Loaded streets:", streets);
+        // Namen extrahiern
+        streets.forEach(street => {
+            //console.log(street);
+        });
+    })
+    .catch(error => console.error("Error loading streets:", error));
+
+
+
+const input = document.getElementById("street");
+const suggestionBox = document.getElementById("suggestions");
+input.addEventListener("input", function() {
+    let query = this.value.toLowerCase().trim();
+    suggestionBox.innerHTML = "";
+    if (query.length === 0) {
+        suggestionBox.style.display = "none";
+        return;
+    }
+
+    let matches = streets.filter(street =>
+        street.toLowerCase().startsWith(query)
+    );
+
+    matches.slice(0, 10).forEach(street => {
+        let li = document.createElement("li");
+        li.textContent = street;
+        li.addEventListener("click", function() {
+            input.value = street;
+            suggestionBox.innerHTML = "";
+            suggestionBox.style.display = "none";
+            input.style.backgroundColor = '#B1FCCC'
+        });
+        suggestionBox.appendChild(li);
+    });
+
+    if (matches.length > 0) {
+        suggestionBox.style.display = "block";
+    } else {
+        suggestionBox.style.display = "none";
+    }
+});
+
+input.addEventListener("blur", function() {
+    setTimeout(() => {
+        suggestionBox.style.display = "none";
+    }, 250); 
+});
+
+input.addEventListener("focus", function() {
+    if(input.value.length > 0 && !streets.includes(input.value)) {
+        suggestionBox.style.display = "block";
+    }
+    input.style.backgroundColor = 'white'
+});
+
+
+
+document.addEventListener('gesturestart', function (e) {
+    e.preventDefault();
+})
+
+document.addEventListener('touchmove', function (e) {
+    if (e.scale !== 1) {
+        e.preventDefault();
+    }
+}, { passive: false });
+
+
+async function abschicken(straße) {
+    const response = await fetch("/api/streets", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            street: straße
+        })
+    });
+    return await response.json();
+}
+
+
+
+</script>
+
+
+</body>
+</html>

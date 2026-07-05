@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+<title>Belohnung</title>
+
+<style>
+    body {
+        margin: 0;
+        padding: 20px;
+        font-family: "Comic Sans", "Comic Sans MS", "Chalkboard", "ChalkboardSE-Regular", sans-serif;
+        background: #000000;
+        text-align: center;
+    }
+
+    .patron{
+        height: 50vh;
+        border: 4px solid #4a90e2;
+        border-radius: 12px;
+        box-shadow: 0 0 20px #8d62f2;
+        margin-top: 3vh;
+        margin-bottom: 3vh;
+    }
+
+    h1 {
+        color: #ffffff;
+        font-size: 3vh;
+    }
+    .beschreibung {
+        color: #8d62f2;
+        font-size: 3vh;
+    }
+
+</style>
+</head>
+
+<body>
+<h1>
+    Als Belohnung erhältst du deinen eigenen Leipziger Schutzgeist👻 
+    Möge er über dich wachen und dich bei deinem Studium beschützen🫡
+</h1>
+
+<img class="patron" id="patron" src="">
+
+<div class="beschreibung" id="beschreibung">
+
+</div>
+
+
+<script>
+const patrons = [
+    {
+        name: "Bärlauchdieb aus dem Auwald",
+        image: "static/patrone/bärlauch.jpeg"
+    },
+
+    {
+        name: "Kleingärtner aus Gohlis",
+        image: "static/patrone/gärtner.jpeg"
+    },
+
+    {
+        name: "Methbiker aus Grünau",
+        image: "static/patrone/methi.jpeg"
+    },
+
+    {
+        name: "Schabrackentapir aus dem Godwanaland",
+        image: "static/patrone/tapir.jpeg"
+    },
+
+    {
+        name: "Tool-Admin der Universität Leipzig",
+        image: "static/patrone/tooladmin.jpeg"
+    },
+    {
+        name: "Waschbär aus dem Clara-Zetkin Patk",
+        image: "static/patrone/waschbär.jpeg"
+    }
+];
+
+
+let zufall = sessionStorage.getItem("image");
+console.log(zufall)
+
+if(zufall === null) {
+    zufall = Math.floor(Math.random() * patrons.length);
+    sessionStorage.setItem("image", zufall);
+}
+document.getElementById("patron").src = patrons[zufall].image;
+document.getElementById("beschreibung").textContent = patrons[zufall].name;
+</script>
+
+</body>
+</html>

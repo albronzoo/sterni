@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+<title>Bonusrunde!</title>
+
+<style>
+    body {
+        margin: 0;
+        padding: 20px;
+        font-family: "Comic Sans", "Comic Sans MS", "Chalkboard", "ChalkboardSE-Regular", sans-serif;
+        background: #f089ca;
+        text-align: center;
+    }
+
+    h1 {
+        font-size: 5vh;
+        color: #ffbb10;
+        text-shadow: 3px 3px #000000;
+    }
+
+    .subtitle {
+        font-size: 3vh;
+        margin-bottom: 10%;
+    }
+
+    .endtitle {
+        font-size: 3vh;
+        margin-top: 5%;
+        color: #ffbb10;
+        text-shadow: 2px 2px #000000;
+    }
+
+
+    .options {
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+        flex-wrap: wrap;
+    }
+
+    .card {
+        background: white;
+        border: 5px solid #000;
+        border-radius: 20px;
+        padding: 15px;
+        width: 40vw;
+        max-width: 220px;
+
+        cursor: pointer;
+
+        box-shadow: 5px 5px 0px #000;
+
+        transition: transform 0.15s;
+    }
+
+    .card:hover {
+        transform: scale(1.05) rotate(-2deg);
+    }
+
+    .card img {
+        width: 100%;
+        aspect-ratio: 1/1;
+        object-fit: cover;
+        border-radius: 15px;
+    }
+
+    .name {
+        margin-top: 10px;
+        font-size: 1.4rem;
+        font-weight: bold;
+    }
+
+    .crown {
+        display: none;
+        font-size: 8vh;
+        padding-bottom: 3vh;
+        cursor: pointer;
+        transition: transform 0.6s;
+
+    }
+
+    .crown:hover {
+        transform: rotate(720deg);
+    }
+
+    @media (max-width: 500px) {
+
+        .card {
+            width: 38vw;
+            padding: 10px;
+        }
+
+        .name {
+            font-size: 1rem;
+        }
+
+        h1 {
+            font-size: 1.8rem;
+        }
+    }
+
+</style>
+
+</head>
+
+
+<body>
+<h1>👀 Was ist dir Wichtiger? 🤔🤪</h1>
+
+<div class="subtitle" id="sub">
+    Wähle aus, was die Umgebung einer Studentenwohnung noch mehr boosted! 💯
+</div>
+
+<div class="crown" id="crown" onclick="redirect()">
+    👑
+</div>
+<div class="options">
+
+    <div class="card" id="option1" onclick="vote(0)">
+        <img id="img1">
+        <div class="name" id="name1"></div>
+    </div>
+
+
+    <div class="card" id="option0" onclick="vote(1)">
+        <img id="img2">
+        <div class="name" id="name2"></div>
+    </div>
+
+</div>
+
+<div class="endtitle" id="ende">
+    ❤️‍🔥Dein Gewinner steht fest!❤️‍🔥 <br> Klicke auf die Krone um eine Belohung für deine Mühen zu erhalten!
+</div>
+
+
+<script>
+
+document.getElementById("ende").style.display = 'none'
+
+const options = [
+
+    {
+        name: "S-Bahn Haltestelle",
+        image: "static/bilder/bahn.jpeg"
+    },
+
+    {
+        name: "Späti",
+        image: "static/bilder/späti.jpeg"
+    },
+
+    {
+        name: "Discounter",
+        image: "static/bilder/kaufland.jpeg"
+    },
+
+    {
+        name: "Bib",
+        image: "static/bilder/bib.jpeg"
+    },
+
+    {
+        name: "Cafe",
+        image: "static/bilder/cafe.jpeg"
+    },
+
+    {
+        name: "Innenstadt",
+        image: "static/bilder/city.jpeg"
+    },
+
+    {
+        name: "Döner",
+        image: "static/bilder/döner.jpeg"
+    },
+
+    {
+        name: "Freibad",
+        image: "static/bilder/freibad.jpeg"
+    },
+
+    {
+        name: "Gym",
+        image: "static/bilder/maggus.jpeg"
+    },
+
+    {
+        name: "Mensa",
+        image: "static/bilder/mensa.jpeg"
+    },
+
+    {
+        name: "Nachtleben",
+        image: "static/bilder/nachtclub.jpeg"
+    },
+
+    {
+        name: "Park",
+        image: "static/bilder/park.jpeg"
+    },
+
+    {
+        name: "See",
+        image: "static/bilder/see.jpeg"
+    },
+
+    {
+        name: "Sportplätze",
+        image: "static/bilder/sport.avif"
+    },
+
+    {
+        name: "Campus",
+        image: "static/bilder/uni.jpeg"
+    },
+
+
+];
+
+// Anzahl Optionen Voting
+const number = 15
+
+// Aktuelle Optionen
+let current = [
+    null,
+    null
+];
+
+// Optionen, die im Aktuellen Fenster schon geklickt wurden -> Prevent Reloading
+let voted = [];
+
+
+
+
+function randomOption(exclude=[]) {
+
+    let available = options.filter(
+        x => !exclude.includes(x)
+    );
+
+    return available[
+        Math.floor(Math.random() * available.length)
+    ];
+}
+
+
+
+// initialize
+function start() {
+
+    current[0] = randomOption();
+    current[1] = randomOption([current[0]]);
+
+    render();
+
+}
+
+
+
+function render() {
+
+    document.getElementById("img1").src =
+        current[0].image;
+
+    document.getElementById("name1").innerText =
+        current[0].name;
+
+
+
+    document.getElementById("img2").src =
+        current[1].image;
+
+    document.getElementById("name2").innerText =
+        current[1].name;
+
+}
+
+
+
+// Vote-Funktion -> To-Do: Wenn alle Sachen durchgevoted sind - href neue Seite laden
+async function vote(index) {
+    const winner = current[index];
+    const loserIndex = index === 0 ? 1 : 0;
+
+    voted.push(current[loserIndex])
+
+
+    console.log(
+        "Winner:",
+        winner.name,
+        "Loser:",
+        current[loserIndex].name
+    );
+
+
+    await submitVote(winner.name, current[loserIndex].name)
+
+
+    // Ersetze den Verlierer, wenn noch Optionen übrig sind -> Sonst zur Belohnung ein spinning Methbike
+    // Oder ein Kasten Sterni verlosen -> E-Mail eingeben
+    console.log("Loser-Picks", voted)
+
+
+    //If voted < options.len 
+
+    voted.push(winner)
+
+    if (voted.length < 15) {
+        current[loserIndex] =
+            randomOption(voted);
+        voted.pop(winner)
+        render();
+    } else {
+        champion(index)
+    }
+
+    //Sonst nicht rendern -> Schutzpatron Seite
+}
+start();
+
+
+async function champion(index) {
+        var id = `option${index}`
+        console.log(id)
+        document.getElementById(id).style.display = 'none'
+        document.getElementById("crown").style.display = 'block'
+        // Button spawnen mit Belohnung -> Maybe die oberen Faden? 
+        document.getElementById("sub").style.display = "none"
+        document.getElementById("ende").style.display = "block"
+        document.getElementById("option1").style.pointerEvents = "none";
+        document.getElementById("option0").style.pointerEvents = "none";
+}
+
+function redirect (){
+    window.location.href = "/patron";
+}
+
+
+
+// Source - https://stackoverflow.com/a/47480429
+// Posted by Etienne Martin, modified by community. See post 'Timeline' for change history
+// Retrieved 2026-07-05, License - CC BY-SA 4.0
+const delay = ms => new Promise(res => setTimeout(res, ms));
+
+document.addEventListener('gesturestart', function (e) {
+    e.preventDefault();
+})
+
+document.addEventListener('touchmove', function (e) {
+    if (e.scale !== 1) {
+        e.preventDefault();
+    }
+}, { passive: false });
+
+async function submitVote(winner, loser) {
+    const response = await fetch("/api/vote", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            winner: winner,
+            loser: loser
+        })
+    });
+    return await response.json();
+}
+
+
+</script>
+
+
+</body>
+</html>

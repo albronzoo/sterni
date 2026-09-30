@@ -63,7 +63,7 @@ def street():
     data = request.get_json()
     street = Straßen(
         straße=data["street"],
-        iphash=get_voter_hash(),
+        iphash=iphash(),
         timestamp=datetime.utcnow()
     )
     db.session.add(street)
@@ -77,7 +77,7 @@ def vote():
     vote = Ranking(
         winner=data["winner"],
         loser=data["loser"],
-        iphash=get_voter_hash(),
+        iphash=iphash(),
         timestamp=datetime.utcnow()
     )
     db.session.add(vote)
@@ -86,7 +86,7 @@ def vote():
 
 
 # Hilfsfunktion um User-Hash zu bekommen
-def get_voter_hash():
+def iphash():
     ip = request.remote_addr or ""
     ua = request.headers.get("User-Agent", "")
     secret = app.config["SECRET_KEY"]
